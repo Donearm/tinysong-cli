@@ -143,7 +143,10 @@ def main():
         print(result)
         result_url = [result[0]['Url']]
         for n in range(0, int(options.limit)):
-            print("%s - %s - %s # %s" % (result[n]['ArtistName'], result[n]['AlbumName'], result[n]['SongName'], result[n]['Url']))
+            try:
+                print("%s - %s - %s # %s" % (result[n]['ArtistName'], result[n]['AlbumName'], result[n]['SongName'], result[n]['Url']))
+            except IndexError:
+                return
     else:
         url = BASEURL + '/a/' + joined_args + '?format=json&key=' + APIKEY
         result = tinysong_search(url)
