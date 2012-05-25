@@ -22,14 +22,21 @@ import urllib2
 #import urllib.request, urllib.error, urllib.parse
 import json
 import webbrowser
+import tweepy
 from urllib import urlencode
 from optparse import OptionParser
-from apikey import APIKEY
-
 
 BASEURL = 'http://tinysong.com'
 HEADERS = {'Accept': ['text/plain', 'application/json', 'text/html'],
         'User-Agent': 'tinysong-cli' }
+
+try:
+    from tinysongconfig import APIKEY
+except ImportError: 
+    print("You should request a tinysong key at %s" % BASEURL + '/api')
+    print("Paste it in a tinysongconfig.py file like \'APIKEY = 'your_api'\' and retry") 
+    sys.exit(1)
+
 
 
 def argument_parser():
@@ -49,9 +56,47 @@ def argument_parser():
             help="open the url in browser.\nUrl will be the only or the first one (in case of multiple results)",
             action="store_true",
             dest="openbrowser")
+    arguments.add_option("-t", "--tweet",
+            help="tweet the first song found on Twitter",
+            action="store_true",
+            dest="tweet")
 
     (options, args) = arguments.parse_args()
     return options, args
+
+def tw_authenticate(ck, cs):
+    """OAuth authentication on Twitter"""
+
+    auth = tweepy.OAuthHandler(ck, cs)
+    auth_url = auth.get_authorization_url()
+
+    print("Please authorize this application by giving access to your Twitter account")
+    open_url_in_browser(auth_url)
+    pin = input('Paste PIN here: ')
+    auth.get_access_token(pin)
+    if auth.access_token.key and auth.access_token.secret:
+        with open('tinysongconfig.py', 'w') as f:
+            f.write("APIKEY = '%s'\n" % APIKEY)
+            f.write("TW_CONSUMER = '%s'\nTW_CONSUMER_SECRET = '%s'\n"
+                    % (ck, cs))
+            f.write("TW_ACCESS = '%s'\nTW_ACCESS_SECRET = '%s'" 
+                    % (auth.access_token.key, auth.access_token.secret))
+        return auth.access_token.key, auth.access_token.secret
+    else:
+        print("Authentication unsuccessful (perhaps wrong PIN?")
+        sys.exit(1)
+
+
+def tw_tweet_song(ck, cs, acc_key, acc_sec):
+    """Tweet a tinysong's song on Twitter"""
+    auth = tweepy.OAuthHandler(ck, cs)
+    auth.set_access_token(acc_key, acc_sec)
+
+    api = tweepy.API(auth)
+    if api:
+        #TODO
+        pass
+
 
 
 def tinysong_search(url):
@@ -85,6 +130,7 @@ def main():
 
     joined_args = '+'.join(args)
 
+
     if options.metasearch:
         url = BASEURL + '/b/' + joined_args + '?format=json&key=' + APIKEY
         result = tinysong_search(url)
@@ -107,6 +153,14 @@ def main():
     if options.openbrowser:
         open_url_in_browser(result_url[0])
 
+    if options.tweet:
+        try:
+            from tinysongconfig import TW_CONSUMER, TW_CONSUMER_SECRET, \
+        TW_ACCESS, TW_ACCESS_SECRET
+            tw_tweet_song(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET)
+        except ImportError:
+            # we need to authenticate
+            TW_ACCESS, TW_ACCESS_SECRET = tw_authenticate(TW_CONSUMER, TW_CONSUMER_SECRET)
 
 
 if __name__ == '__main__':
