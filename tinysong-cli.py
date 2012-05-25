@@ -62,18 +62,14 @@ def tinysong_search(url):
     return json.loads(response.read())
 
 # Python 3.*
-    #response = urllib.request.urlopen(url)
+#    response = urllib.request.urlopen(url)
     
     # save the charset of the page to be used after to decode
-    #enc = response.headers.get_content_charset()
-    #print(response.headers.get_content_charset())
+#    enc = response.headers.get_content_charset()
 
-# this doesn't work, see 
-# http://stackoverflow.com/questions/2143206/convert-google-search-results-into-json-in-python-3-1
-    #print(response.read())
-    #print(type(response.read()))
-    #print(type(response.msg))
-    #return json.loads(response.read().decode(enc))
+#    bytes_response = response.read()
+#    decoded_response = bytes_response.decode(enc)
+#    return json.loads(decoded_response)
 # End Python 3.*
 
 def open_url_in_browser(u):
