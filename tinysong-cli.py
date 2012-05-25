@@ -21,10 +21,12 @@ import sys
 import urllib2
 #import urllib.request, urllib.error, urllib.parse
 import json
-import webbrowser
 import tweepy
 from urllib import urlencode
 from optparse import OptionParser
+from browser import open_url_in_browser
+from tinysong_twitter import tw_authenticate, tw_tweet_song
+
 
 BASEURL = 'http://tinysong.com'
 HEADERS = {'Accept': ['text/plain', 'application/json', 'text/html'],
@@ -64,41 +66,6 @@ def argument_parser():
     (options, args) = arguments.parse_args()
     return options, args
 
-def tw_authenticate(ck, cs):
-    """OAuth authentication on Twitter"""
-
-    auth = tweepy.OAuthHandler(ck, cs)
-    auth_url = auth.get_authorization_url()
-
-    print("Please authorize this application by giving access to your Twitter account")
-    open_url_in_browser(auth_url)
-    pin = input('Paste PIN here: ')
-    auth.get_access_token(pin)
-    if auth.access_token.key and auth.access_token.secret:
-        with open('tinysongconfig.py', 'w') as f:
-            f.write("APIKEY = '%s'\n" % APIKEY)
-            f.write("TW_CONSUMER = '%s'\nTW_CONSUMER_SECRET = '%s'\n"
-                    % (ck, cs))
-            f.write("TW_ACCESS = '%s'\nTW_ACCESS_SECRET = '%s'" 
-                    % (auth.access_token.key, auth.access_token.secret))
-        return auth.access_token.key, auth.access_token.secret
-    else:
-        print("Authentication unsuccessful (perhaps wrong PIN?")
-        sys.exit(1)
-
-
-def tw_tweet_song(ck, cs, acc_key, acc_sec):
-    """Tweet a tinysong's song on Twitter"""
-    auth = tweepy.OAuthHandler(ck, cs)
-    auth.set_access_token(acc_key, acc_sec)
-
-    api = tweepy.API(auth)
-    if api:
-        #TODO
-        pass
-
-
-
 def tinysong_search(url):
     """make a search on tinysong"""
 
@@ -116,13 +83,6 @@ def tinysong_search(url):
 #    decoded_response = bytes_response.decode(enc)
 #    return json.loads(decoded_response)
 # End Python 3.*
-
-def open_url_in_browser(u):
-    """open a tinysong url in default web browser"""
-    try:
-        webbrowser.open_new_tab(u)
-    except webbrowser.Error as e:
-        print(e)
 
 
 def main():
@@ -163,7 +123,7 @@ def main():
             tw_tweet_song(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET)
         except ImportError:
             # we need to authenticate
-            TW_ACCESS, TW_ACCESS_SECRET = tw_authenticate(TW_CONSUMER, TW_CONSUMER_SECRET)
+            TW_ACCESS, TW_ACCESS_SECRET = tw_authenticate(APIKEY, TW_CONSUMER, TW_CONSUMER_SECRET)
 
 
 if __name__ == '__main__':
