@@ -26,6 +26,7 @@ from urllib import urlencode
 from optparse import OptionParser
 from browser import open_url_in_browser
 from tinysong_twitter import tw_authenticate, tw_tweet_song
+from tinysong_mpd import mpd_get_song
 
 
 BASEURL = 'http://tinysong.com'
@@ -62,6 +63,10 @@ def argument_parser():
             help="tweet the first song found on Twitter",
             action="store_true",
             dest="tweet")
+    arguments.add_option("-m", "--mpd",
+            help="get current playing song from a MPD server",
+            action="store_true",
+            dest="mpd")
 
     (options, args) = arguments.parse_args()
     return options, args
@@ -89,6 +94,10 @@ def main():
     options, args = argument_parser()
 
     joined_args = '+'.join(args)
+
+    if options.mpd:
+        mpdartist, mpdalbum, mpdsong = mpd_get_song()
+#        sys.exit(0)
 
 
     if options.metasearch:
