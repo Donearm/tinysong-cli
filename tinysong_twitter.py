@@ -50,5 +50,8 @@ def tw_tweet_song(ck, cs, acc_key, acc_sec):
 
     api = tweepy.API(auth)
     if api:
-        #TODO
+        PREP = '♫ on air: '
+        POSTP = ' #NP ♫'
+#        api.update_status("")
         pass
+
