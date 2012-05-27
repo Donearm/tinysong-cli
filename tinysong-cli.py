@@ -122,6 +122,8 @@ class TinySongSearcher():
         """basic search on tinysong"""
         self.url = BASEURL + '/a/' + args + '?format=json&key=' + APIKEY
         self.json = self.search(self.url)
+        if not self.json:
+            self.not_found()
         self.result_url = self.json
         print(self.result_url)
         return self.result_url
@@ -130,12 +132,15 @@ class TinySongSearcher():
         """metasearch on tinysong"""
         self.url = BASEURL + '/b/' + args + '?format=json&key=' + APIKEY
         self.json = self.search(self.url)
-        self.result_url = self.json['Url']
-        self.song = self.json['SongName']
-        self.artist = self.json['ArtistName']
-        self.album = self.json['AlbumName']
-        print("%s - %s - %s # %s" % (self.artist, self.album, self.song, self.result_url))
-        return self.result_url, self.artist, self.album, self.song
+        try:
+            self.result_url = self.json[0]['Url']
+            self.song = self.json['SongName']
+            self.artist = self.json['ArtistName']
+            self.album = self.json['AlbumName']
+            print("%s - %s - %s # %s" % (self.artist, self.album, self.song, self.result_url))
+            return self.result_url, self.artist, self.album, self.song
+        except IndexError:
+            self.not_found()
 
     def limit_search(self, args, limit):
         """search on tinysong with a results limit"""
