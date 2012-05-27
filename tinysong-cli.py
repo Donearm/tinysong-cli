@@ -18,6 +18,7 @@ __email__ = "forod.g@gmail.com"
 __status__ = "stable"
 
 import sys
+import time
 import urllib2
 #import urllib.request, urllib.error, urllib.parse
 import json
@@ -97,11 +98,70 @@ def not_found():
 #    return json.loads(decoded_response)
 # End Python 3.*
 
+class TinySongSearcher():
+    def __init__(self):
+        self.song = ''
+        self.artist = ''
+        self.album = ''
+        self.json = ''
+
+    def search(self, url):
+        """open tinysong url and parse its json results"""
+
+        self.response = urllib2.urlopen(url, urlencode(HEADERS))
+
+        try:
+            return json.loads(self.response.read())
+        except ValueError:
+            return
+    def not_found(self):
+        print("Song not found on tinysong, sorry")
+        sys.exit(1)
+
+    def basic_search(self, args):
+        """basic search on tinysong"""
+        self.url = BASEURL + '/a/' + args + '?format=json&key=' + APIKEY
+        self.json = self.search(self.url)
+        self.result_url = self.json
+        print(self.result_url)
+        return self.result_url
+
+    def meta_search(self, args):
+        """metasearch on tinysong"""
+        self.url = BASEURL + '/b/' + args + '?format=json&key=' + APIKEY
+        self.json = self.search(self.url)
+        self.result_url = self.json['Url']
+        self.song = self.json['SongName']
+        self.artist = self.json['ArtistName']
+        self.album = self.json['AlbumName']
+        print("%s - %s - %s # %s" % (self.artist, self.album, self.song, self.result_url))
+        return self.result_url, self.artist, self.album, self.song
+
+    def limit_search(self, args, limit):
+        """search on tinysong with a results limit"""
+        self.url = BASEURL + '/s/' + args + '?format=json&limit=' + str(limit) + '&key=' + APIKEY
+        self.json = self.search(self.url)
+        try:
+            self.result_url = self.json[0]['Url']
+            for n in range(0, int(limit)):
+                try:
+                    print("%s - %s - %s # %s" % (self.json[n]['ArtistName'], self.json[n]['AlbumName'], self.json[n]['SongName'], self.json[n]['Url']))
+                except IndexError:
+                    pass
+            self.song = self.json[0]['SongName']
+            self.artist = self.json[0]['ArtistName']
+            self.album = self.json[0]['AlbumName']
+            return self.result_url, self.artist, self.album, self.song
+        except (TypeError, IndexError):
+            self.not_found()
+
 
 def main():
     options, args = argument_parser()
 
     joined_args = '+'.join(args)
+
+    ts = TinySongSearcher()
 
     if options.mpd:
         mpdartist, mpdalbum, mpdsong = mpd_get_song()
@@ -110,33 +170,36 @@ def main():
 
 
     if options.metasearch:
-        url = BASEURL + '/b/' + joined_args + '?format=json&key=' + APIKEY
-        result = tinysong_search(url)
-        print(result)
-        result_url = result['Url']
-        print("%s - %s - %s # %s" % (result['ArtistName'], result['AlbumName'], result['SongName'], result_url[0]))
+        result_url, artistname, albumname, songname = ts.meta_search(joined_args)
+#        url = BASEURL + '/b/' + joined_args + '?format=json&key=' + APIKEY
+#        result = tinysong_search(url)
+#        print(result)
+#        result_url = result['Url']
+#        print("%s - %s - %s # %s" % (result['ArtistName'], result['AlbumName'], result['SongName'], result_url[0]))
     elif options.limit:
-        url = BASEURL + '/s/' + joined_args + '?format=json&limit=' + str(options.limit) + '&key=' + APIKEY
-        result = tinysong_search(url)
-        print(result)
-        try:
-            result_url = result[0]['Url']
-        except (TypeError, IndexError):
-            not_found()
-        for n in range(0, int(options.limit)):
-            try:
-                print("%s - %s - %s # %s" % (result[n]['ArtistName'], result[n]['AlbumName'], result[n]['SongName'], result[n]['Url']))
-            except IndexError:
-                pass
+        result_url, artistname, albumname, songname = ts.limit_search(joined_args, options.limit)
+#        url = BASEURL + '/s/' + joined_args + '?format=json&limit=' + str(options.limit) + '&key=' + APIKEY
+#        result = tinysong_search(url)
+#        print(result)
+#        try:
+#            result_url = result[0]['Url']
+#        except (TypeError, IndexError):
+#            not_found()
+#        for n in range(0, int(options.limit)):
+#            try:
+#                print("%s - %s - %s # %s" % (result[n]['ArtistName'], result[n]['AlbumName'], result[n]['SongName'], result[n]['Url']))
+#            except IndexError:
+#                pass
     else:
-        url = BASEURL + '/a/' + joined_args + '?format=json&key=' + APIKEY
-        result = tinysong_search(url)
-        result_url = result
-        print(result_url)
+        result_url, artistname, albumname, songname = ts.basic_search(joined_args)
+#        url = BASEURL + '/a/' + joined_args + '?format=json&key=' + APIKEY
+#        result = tinysong_search(url)
+#        result_url = result
+#        print(result_url)
 
     # stop if we haven't got any result from tinysong
     if not result_url:
-        not_found()
+        ts.not_found()
 
     if options.openbrowser:
         open_url_in_browser(result_url)
@@ -149,7 +212,7 @@ def main():
             # we need to authenticate
             TW_ACCESS, TW_ACCESS_SECRET = tw_authenticate(APIKEY, TW_CONSUMER, TW_CONSUMER_SECRET)
         finally:
-            tw_tweet_song(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET, result_url)
+            tw_tweet_song(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET, result_url, artistname, songname)
 
 
 

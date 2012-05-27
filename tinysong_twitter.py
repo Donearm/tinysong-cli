@@ -19,6 +19,7 @@ __status__ = "stable"
 import sys
 import tweepy
 from browser import open_url_in_browser
+from tinysongconfig import PREP, POSTP
 
 def tw_authenticate(apikey, ck, cs):
     """OAuth authentication on Twitter"""
@@ -43,16 +44,15 @@ def tw_authenticate(apikey, ck, cs):
         sys.exit(1)
 
 
-def tw_tweet_song(ck, cs, acc_key, acc_sec, link):
+def tw_tweet_song(ck, cs, acc_key, acc_sec, link, artist, song):
     """Tweet a tinysong's song on Twitter"""
     auth = tweepy.OAuthHandler(ck, cs)
     auth.set_access_token(acc_key, acc_sec)
 
     api = tweepy.API(auth)
     if api:
-        PREP = u'♫ on air: '
-        POSTP = u' #NP ♫'
-        print(PREP + link + POSTP)
+#        print(PREP + artist + ' - ' + song + ' ' + link + POSTP)
+        print("%s %s - %s %s %s" % (PREP, artist, song, link, POSTP))
 #        api.update_status("")
         pass
 
