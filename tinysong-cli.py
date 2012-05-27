@@ -97,7 +97,8 @@ def main():
 
     if options.mpd:
         mpdartist, mpdalbum, mpdsong = mpd_get_song()
-#        sys.exit(0)
+        # we use what mpd gives back as tinysong arguments
+        joined_args = '+'.join([mpdartist, mpdalbum, mpdsong])
 
 
     if options.metasearch:

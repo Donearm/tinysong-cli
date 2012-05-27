@@ -52,6 +52,7 @@ def tw_tweet_song(ck, cs, acc_key, acc_sec):
     if api:
         PREP = '♫ on air: '
         POSTP = ' #NP ♫'
+        print(PREP + POSTP)
 #        api.update_status("")
         pass
 
