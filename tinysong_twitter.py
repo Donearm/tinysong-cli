@@ -43,16 +43,16 @@ def tw_authenticate(apikey, ck, cs):
         sys.exit(1)
 
 
-def tw_tweet_song(ck, cs, acc_key, acc_sec):
+def tw_tweet_song(ck, cs, acc_key, acc_sec, link):
     """Tweet a tinysong's song on Twitter"""
     auth = tweepy.OAuthHandler(ck, cs)
     auth.set_access_token(acc_key, acc_sec)
 
     api = tweepy.API(auth)
     if api:
-        PREP = '♫ on air: '
-        POSTP = ' #NP ♫'
-        print(PREP + POSTP)
+        PREP = u'♫ on air: '
+        POSTP = u' #NP ♫'
+        print(PREP + link + POSTP)
 #        api.update_status("")
         pass
 

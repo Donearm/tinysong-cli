@@ -76,7 +76,15 @@ def tinysong_search(url):
 
     response = urllib2.urlopen(url, urlencode(HEADERS))
 
-    return json.loads(response.read())
+    try:
+        return json.loads(response.read())
+    except ValueError:
+        return
+
+def not_found():
+    print("Song not found on tinysong, sorry")
+    sys.exit(1)
+
 
 # Python 3.*
 #    response = urllib.request.urlopen(url)
@@ -105,35 +113,44 @@ def main():
         url = BASEURL + '/b/' + joined_args + '?format=json&key=' + APIKEY
         result = tinysong_search(url)
         print(result)
-        result_url = [result['Url']]
+        result_url = result['Url']
         print("%s - %s - %s # %s" % (result['ArtistName'], result['AlbumName'], result['SongName'], result_url[0]))
     elif options.limit:
         url = BASEURL + '/s/' + joined_args + '?format=json&limit=' + str(options.limit) + '&key=' + APIKEY
         result = tinysong_search(url)
         print(result)
-        result_url = [result[0]['Url']]
+        try:
+            result_url = result[0]['Url']
+        except (TypeError, IndexError):
+            not_found()
         for n in range(0, int(options.limit)):
             try:
                 print("%s - %s - %s # %s" % (result[n]['ArtistName'], result[n]['AlbumName'], result[n]['SongName'], result[n]['Url']))
             except IndexError:
-                return
+                pass
     else:
         url = BASEURL + '/a/' + joined_args + '?format=json&key=' + APIKEY
         result = tinysong_search(url)
-        print(result)
-        result_url = [result]
+        result_url = result
+        print(result_url)
+
+    # stop if we haven't got any result from tinysong
+    if not result_url:
+        not_found()
 
     if options.openbrowser:
-        open_url_in_browser(result_url[0])
+        open_url_in_browser(result_url)
 
     if options.tweet:
         try:
             from tinysongconfig import TW_CONSUMER, TW_CONSUMER_SECRET, \
         TW_ACCESS, TW_ACCESS_SECRET
-            tw_tweet_song(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET)
         except ImportError:
             # we need to authenticate
             TW_ACCESS, TW_ACCESS_SECRET = tw_authenticate(APIKEY, TW_CONSUMER, TW_CONSUMER_SECRET)
+        finally:
+            tw_tweet_song(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET, result_url)
+
 
 
 if __name__ == '__main__':
