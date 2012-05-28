@@ -196,7 +196,8 @@ def main():
 #            except IndexError:
 #                pass
     else:
-        result_url, artistname, albumname, songname = ts.basic_search(joined_args)
+#        result_url, artistname, albumname, songname = ts.basic_search(joined_args)
+        result_url = ts.basic_search(joined_args)
 #        url = BASEURL + '/a/' + joined_args + '?format=json&key=' + APIKEY
 #        result = tinysong_search(url)
 #        result_url = result
@@ -217,7 +218,14 @@ def main():
             # we need to authenticate
             TW_ACCESS, TW_ACCESS_SECRET = tw_authenticate(APIKEY, TW_CONSUMER, TW_CONSUMER_SECRET)
         finally:
-            tw_tweet_song(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET, result_url, artistname, songname)
+            try:
+                tw_tweet_song(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET, result_url, artistname, songname)
+            except UnboundLocalError:
+                # we might had been looking for the url only, no point in tweeting
+                # without artistname and songname
+                print("Only a url was found, are you sure you want to tweet just that?")
+                print("Try a meta search maybe?")
+                sys.exit(0)
 
 
 
