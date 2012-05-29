@@ -221,11 +221,12 @@ def main():
             try:
                 tw_tweet_song(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET, result_url, artistname, songname)
             except UnboundLocalError:
-                # we might had been looking for the url only, no point in tweeting
-                # without artistname and songname
-                print("Only a url was found, are you sure you want to tweet just that?")
-                print("Try a meta search maybe?")
-                sys.exit(0)
+                if not artistname or not songname:
+                    # we might had been looking for the url only, no point in tweeting
+                    # without artistname and songname
+                    print("Only a url was found, are you sure you want to tweet just that?")
+                    print("Try a meta search maybe?")
+                    sys.exit(0)
 
 
 
