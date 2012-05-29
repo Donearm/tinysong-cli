@@ -28,6 +28,7 @@ from optparse import OptionParser
 from browser import open_url_in_browser
 from tinysong_twitter import tw_authenticate, tw_tweet_song
 from tinysong_mpd import mpd_get_song
+import tinysong_cmus
 
 
 BASEURL = 'http://tinysong.com'
@@ -68,6 +69,10 @@ def argument_parser():
             help="get current playing song from a MPD server",
             action="store_true",
             dest="mpd")
+    arguments.add_option("-c", "--cmus",
+            help="get current playing song from Cmus",
+            action="store_true",
+            dest="cmus")
 
     (options, args) = arguments.parse_args()
     return options, args
@@ -173,6 +178,12 @@ def main():
         # we use what mpd gives back as tinysong arguments
         joined_args = '+'.join([mpdartist, mpdalbum, mpdsong])
 
+    if options.cmus:
+        c = tinysong_cmus.CmusStatusParser()
+        cmusartist, cmusalbum, cmussong = c.parse()
+        print(cmusartist, cmusalbum, cmussong)
+        # form arguments for tinysong query
+        joined_args = '+'.join([cmusartist, cmusalbum, cmussong])
 
     if options.metasearch:
         result_url, artistname, albumname, songname = ts.meta_search(joined_args)
