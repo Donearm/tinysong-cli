@@ -52,7 +52,7 @@ def tw_tweet_song(ck, cs, acc_key, acc_sec, link, artist, song):
     api = tweepy.API(auth)
     if api:
 #        print(PREP + artist + ' - ' + song + ' ' + link + POSTP)
-        print("%s %s - %s %s %s" % (PREP, artist, song, link, POSTP))
+        print("%s %s - %s %s %s" % (PREP.decode("utf-8"), artist, song, link, POSTP.decode("utf-8")))
 #        api.update_status("")
         pass
 

@@ -143,7 +143,7 @@ class TinySongSearcher():
         self.url = BASEURL + '/b/' + args + '?format=json&key=' + APIKEY
         self.json = self.search(self.url)
         try:
-            self.result_url = self.json[0]['Url']
+            self.result_url = self.json['Url']
             self.song = self.json['SongName']
             self.artist = self.json['ArtistName']
             self.album = self.json['AlbumName']
@@ -215,12 +215,11 @@ def main():
             try:
                 tw_tweet_song(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET, result_url, artistname, songname)
             except UnboundLocalError:
-                if not artistname or not songname:
-                    # we might had been looking for the url only, no point in tweeting
-                    # without artistname and songname
-                    print("Only a url was found, are you sure you want to tweet just that?")
-                    print("Try a meta search maybe?")
-                    sys.exit(0)
+                # we might had been looking for the url only, no point in tweeting
+                # without artistname and songname
+                print("Only a url was found, are you sure you want to tweet just that?")
+                print("Try a meta search maybe?")
+                sys.exit(0)
 
 
 
