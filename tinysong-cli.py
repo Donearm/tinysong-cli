@@ -47,6 +47,7 @@ except ImportError:
 def argument_parser():
     usage = "usage: pytinysong.py [options] searchterm(s)"
     parser = ArgumentParser(usage=usage, version="%prog 0.1")
+    exclusive_group = parser.add_mutually_exclusive_group(required=False)
     parser.add_argument("-b", "--metasearch",
             help="do a metasearch (returns back more info about the song)",
             action="store_true",
@@ -65,11 +66,11 @@ def argument_parser():
             help="tweet the first song found on Twitter",
             action="store_true",
             dest="tweet")
-    parser.add_argument("-m", "--mpd",
+    exclusive_group.add_argument("-m", "--mpd",
             help="get current playing song from a MPD server",
             action="store_true",
             dest="mpd")
-    parser.add_argument("-c", "--cmus",
+    exclusive_group.add_argument("-c", "--cmus",
             help="get current playing song from Cmus",
             action="store_true",
             dest="cmus")
