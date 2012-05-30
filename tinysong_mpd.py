@@ -12,8 +12,8 @@
 
 __author__ = "Gianluca Fiore"
 __license__ = "GPL"
-__version__ = "0.1"
-__date__ = "20120526"
+__version__ = "0.2"
+__date__ = "20120530"
 __email__ = "forod.g@gmail.com"
 __status__ = "beta"
 

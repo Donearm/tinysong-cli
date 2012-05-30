@@ -12,10 +12,10 @@
 
 __author__ = "Gianluca Fiore"
 __license__ = "GPL"
-__version__ = "0.1"
-__date__ = "20120523"
+__version__ = "0.2"
+__date__ = "20120530"
 __email__ = "forod.g@gmail.com"
-__status__ = "stable"
+__status__ = "beta"
 
 import sys
 import time
