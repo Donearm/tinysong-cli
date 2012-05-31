@@ -190,10 +190,10 @@ def main():
         # form arguments for tinysong query
         joined_args = '+'.join([cmusartist, cmusalbum, cmussong])
 
-    if options.metasearch:
-        result_url, artistname, albumname, songname = ts.meta_search(joined_args)
-    elif options.limit:
+    if options.limit:
         result_url, artistname, albumname, songname = ts.limit_search(joined_args, options.limit)
+    elif options.metasearch:
+        result_url, artistname, albumname, songname = ts.meta_search(joined_args)
     else:
         result_url = ts.basic_search(joined_args)
 
