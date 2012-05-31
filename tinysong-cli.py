@@ -45,7 +45,7 @@ except ImportError:
 
 
 def argument_parser():
-    usage = "usage: pytinysong.py [options] searchterm(s)"
+    usage = "pytinysong.py [options] [searchterm(s)]"
     parser = ArgumentParser(usage=usage, version="%prog 0.1")
     exclusive_group = parser.add_mutually_exclusive_group(required=False)
     parser.add_argument("-b", "--metasearch",
@@ -55,27 +55,27 @@ def argument_parser():
     parser.add_argument("-l", "--limit",
             # API limit should be 32 but apparently it stops returning results 
             # at 14
-            help="the limit to the number of results, between 1 and 14",
+            help="limit the number of results, between 1 and 32",
             action="store",
             dest="limit")
     parser.add_argument("-o", "--open-url",
-            help="open the url in browser.\nUrl will be the only or the first one (in case of multiple results)",
+            help="open the url in browser.\nUrl will be the first one (in case of multiple results)",
             action="store_true",
             dest="openbrowser")
     parser.add_argument("-t", "--tweet",
-            help="tweet the first song found on Twitter",
+            help="tweet the song found on Twitter",
             action="store_true",
             dest="tweet")
     exclusive_group.add_argument("-m", "--mpd",
-            help="get current playing song from a MPD server",
+            help="search current playing song on a MPD server on tinysong",
             action="store_true",
             dest="mpd")
     exclusive_group.add_argument("-c", "--cmus",
-            help="get current playing song from Cmus",
+            help="search current playing song on Cmus on tinysong",
             action="store_true",
             dest="cmus")
     parser.add_argument(action="store",
-            help="query parameters for tinysong",
+            help="query arguments for tinysong",
             nargs="*",
             dest="args")
 
