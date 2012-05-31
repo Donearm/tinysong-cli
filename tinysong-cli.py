@@ -37,9 +37,11 @@ HEADERS = {'Accept': ['text/plain', 'application/json', 'text/html'],
 
 try:
     from tinysongconfig import APIKEY
+    if not APIKEY:
+        raise ImportError
 except ImportError: 
     print("You should request a tinysong key at %s" % BASEURL + '/api')
-    print("Paste it in a tinysongconfig.py file like \'APIKEY = 'your_api'\' and retry") 
+    print("Paste it in a tinysongconfig.py file like APIKEY = 'your_api' and retry") 
     sys.exit(1)
 
 
