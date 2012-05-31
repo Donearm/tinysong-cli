@@ -18,6 +18,7 @@ __status__ = "beta"
 
 import sys
 import tweepy
+from time import sleep
 from browser import open_url_in_browser
 from tinysongconfig import PREP, POSTP
 
@@ -51,8 +52,6 @@ def tw_tweet_song(ck, cs, acc_key, acc_sec, link, artist, song):
 
     api = tweepy.API(auth)
     if api:
-#        print(PREP + artist + ' - ' + song + ' ' + link + POSTP)
         print("%s %s - %s %s %s" % (PREP.decode("utf-8"), artist, song, link, POSTP.decode("utf-8")))
-#        api.update_status("")
-        pass
-
+        sleep(3) # sleep 3 seconds to give user time to abort
+        api.update_status("%s %s - %s %s %s" % (PREP.decode("utf-8"), artist, song, link, POSTP.decode("utf-8")))
