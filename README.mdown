@@ -1,0 +1,32 @@
+#Tinysong-cli
+
+As you can imagine from the project name, Tinysong-cli is a command-line interface to query tinysong.com, written in Python. But it's not just that! Other than implementing the 3 way of searching for a song on tinysong (metasearch, limit search and the basic search), it adds the capability to search what is been playing on MPD or Cmus, find a match and tweet artist name, song name and the tinysong url to the song on Twitter. It's also possible to prepend or postpend (or both) a string to customize the tweet.
+
+###Usage
+
+Basically:
+
+	tinysong-cli.py Queen who wants
+	# => http://tinysong.com/J8YJ
+
+	tinysong-cli.py -b Queen who wants
+	# => Queen - Live at Wembley '86 (disc 1) - Who Wants To Live Forever # http://tinysong.com/J8YJ
+
+	tinysong-cli.py -l 10 Queen
+	# => Queen - Queen Gold - I Want to Break Free # http://tinysong.com/zTJr
+	Queen - Greatest Hits - Don't Stop Me Now # http://tinysong.com/hyw2
+	Queen - Queen Collection - Somebody to Love # http://tinysong.com/kraC
+	Queen - Queen on Fire: Live at the Bowl (disc 2) - Under Pressure # http://tinysong.com/HTFq
+	Queen - The Platinum Collection (disc 1: Greatest Hits I) - Killer Queen # http://tinysong.com/6Ygx
+	Queen - Greatest Hits I & II (disc 1) - Bicycle Race # http://tinysong.com/7BSu
+	Queen - Queen Ballads - Love of My Life # http://tinysong.com/7ftQ
+	Queen - The 12" Collection - Radio Ga Ga # http://tinysong.com/zarO
+	Queen - The Platinum Collection (disc 1: Greatest Hits I) - You're My Best Friend # http://tinysong.com/jPUs
+	Queen - The Best I - Crazy Little Thing Called Love # http://tinysong.com/zG21
+
+These are the basic ways to query tinysong.com. Adding a `-t` will tweet the first result. `-m` and `-c` stands for taking the current playing song on MPD or Cmus as query string for tinysong (they exclude each other and overwrite any other argument that may have been given on the command-line).  
+For more informations, the usual `-h` will output the complete usage rules.
+
+###License
+
+Tinysong-cli is released under the GPLv3.
