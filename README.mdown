@@ -27,6 +27,13 @@ Basically:
 These are the basic ways to query tinysong.com. Adding a `-t` will tweet the first result. `-m` and `-c` stands for taking the current playing song on MPD or Cmus as query string for tinysong (they exclude each other and overwrite any other argument that may have been given on the command-line).  
 For more informations, the usual `-h` will output the complete usage rules.
 
+###Authentication
+
+First of all, rename the provided file `tinysongconfig-default.py` in `tinysongconfig.py`.  
+Then you'll need an API key from tinysong.com. Go there, ask for one and add it to the file in the format `APIKEY = 'your_api'` (it's a simple Python file).
+
+If you want to tweet your query results from tinysong on Twitter, you'll need an access key and secret. Just run tinysong-cli.py with the `t` switch and follow the instructions (access key and secret will be written back to `tinysongconfig.py` so you won't need to re-authenticate next time). Oh, don't mess with the consumer keys will ya?
+
 ###License
 
 Tinysong-cli is released under the GPLv3.
