@@ -33,12 +33,22 @@ def tw_authenticate(apikey, ck, cs):
     pin = input('Paste PIN here: ')
     auth.get_access_token(pin)
     if auth.access_token.key and auth.access_token.secret:
+        tw_format_string = """# Format of the tweet:
+# PREP is what comes before the song link, POSTP is what comes after
+# Leave empty either (or even both) if you want the the tinysong link to be
+# at the beginning/end of the tweet.
+# Don't use too many characters or you'll risk hitting the 140 chars limit.
+"""
         with open('tinysongconfig.py', 'w') as f:
+            f.write("#-*- coding: utf-8 -*-\n\n")
             f.write("APIKEY = '%s'\n" % apikey)
             f.write("TW_CONSUMER = '%s'\nTW_CONSUMER_SECRET = '%s'\n"
                     % (ck, cs))
-            f.write("TW_ACCESS = '%s'\nTW_ACCESS_SECRET = '%s'" 
+            f.write("TW_ACCESS = '%s'\nTW_ACCESS_SECRET = '%s'\n\n" 
                     % (auth.access_token.key, auth.access_token.secret))
+            f.write(tw_format_string)
+            f.write("PREP = '%s'\n" % PREP.decode("utf-8"))
+            f.write("POSTP = '%s'\n" % POSTP.decode("utf-8"))
         return auth.access_token.key, auth.access_token.secret
     else:
         print("Authentication unsuccessful (perhaps wrong PIN?")

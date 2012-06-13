@@ -98,6 +98,17 @@ def not_found():
     print("Song not found on tinysong, sorry")
     sys.exit(1)
 
+def check_tweet(ck, cs, acc_key, acc_sec, link, artist, song):
+    """Wrapper around tw_tweet_song to catch any exception"""
+    try:
+        tw_tweet_song(ck, cs, acc_key, acc_sec, link, artist, song)
+    except UnboundLocalError:
+        # we might had been looking for the url only, no point in tweeting
+        # without an artist and song name
+        print("Only a url was found, are you sure you want to tweet just that?")
+        print("Trya a meta search maybe?")
+        sys.exit(0)
+
 
 # Python 3.*
 #    response = urllib.request.urlopen(url)
@@ -212,20 +223,22 @@ def main():
 
     if options.tweet:
         try:
+            # import...
             from tinysongconfig import TW_CONSUMER, TW_CONSUMER_SECRET, \
         TW_ACCESS, TW_ACCESS_SECRET
+            # ...and tweet!
+            check_tweet(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET, result_url, \
+                    artistname, songname)
         except ImportError:
-            # we need to authenticate
+            # we need to authenticate then
             TW_ACCESS, TW_ACCESS_SECRET = tw_authenticate(APIKEY, TW_CONSUMER, TW_CONSUMER_SECRET)
-        finally:
-            try:
-                tw_tweet_song(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET, result_url, artistname, songname)
-            except UnboundLocalError:
-                # we might had been looking for the url only, no point in tweeting
-                # without artistname and songname
-                print("Only a url was found, are you sure you want to tweet just that?")
-                print("Try a meta search maybe?")
-                sys.exit(0)
+            if TW_ACCESS and TW_ACCESS_SECRET:
+                check_tweet(TW_CONSUMER, TW_CONSUMER_SECRET, TW_ACCESS, TW_ACCESS_SECRET, result_url, \
+                        artistname, songname)
+            else:
+                print("It seems the authentication process went wrong...")
+                sys.exit(1)
+
 
 
 
