@@ -199,6 +199,9 @@ def main():
         mpdartist, mpdalbum, mpdsong = mpd_get_song()
         # we use what mpd gives back as tinysong arguments
         joined_args = '+'.join([mpdartist, mpdalbum, mpdsong])
+        # if we are going to tweet, we need to do at least a meta search
+        if options.tweet:
+            options.metasearch = True
 
     if options.cmus:
         c = tinysong_cmus.CmusStatusParser()
@@ -206,6 +209,9 @@ def main():
         print(cmusartist, cmusalbum, cmussong)
         # form arguments for tinysong query
         joined_args = '+'.join([cmusartist, cmusalbum, cmussong])
+        # if we are going to tweet, we need to do at least a meta search
+        if options.tweet:
+            options.metasearch = True
 
     if options.limit:
         result_url, artistname, albumname, songname = ts.limit_search(joined_args, options.limit)
@@ -238,6 +244,7 @@ def main():
             else:
                 print("It seems the authentication process went wrong...")
                 sys.exit(1)
+
 
 
 
