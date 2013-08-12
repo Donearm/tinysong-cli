@@ -213,6 +213,9 @@ def main():
         if options.tweet:
             options.metasearch = True
 
+    # remove any whitespaces from the query
+    joined_args = '+'.join(joined_args)
+
     if options.limit:
         result_url, artistname, albumname, songname = ts.limit_search(joined_args, options.limit)
     elif options.metasearch:
