@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Donearm/tinysong-cli.svg?branch=master)](https://travis-ci.org/Donearm/tinysong-cli)
+
 #Tinysong-cli
 
 As you can imagine from the project name, Tinysong-cli is a command-line interface to query tinysong.com, written in Python. But it's not just that! Other than implementing the 3 way of searching for a song on tinysong (metasearch, limit search and the basic search), it adds the capability to search what is been playing on MPD or Cmus, find a match and tweet artist name, song name and the tinysong url to the song on Twitter. It's also possible to prepend or postpend (or both) a string to customize the tweet.
